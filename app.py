@@ -7,4 +7,4 @@ st.set_page_config(
 )
 
 st.title("Storytelling de ventas de consumo masivo.")
-st.write("Dashboard interactivo de ventas 2022-2024.")
+st.write("Dashboard interactivo de ventas 2022-2024. (prueba para la publicación)")
