@@ -7,5 +7,10 @@ para analizar ventas mediante visualizaciones y storytelling.
 
 ```bash
 pip install -r requirements.txt
+```
 
-#
+## Ejecutar
+
+```bash
+python -m streamlit run app.py
+```
