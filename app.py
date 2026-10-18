@@ -1,40 +1,90 @@
 
 import streamlit as st
-import pandas as pd
+
+from modulos import presentacion, acerca_de
+from visualizaciones import (
+    grafico_01,
+    grafico_02,
+    grafico_03,
+    grafico_04,
+    grafico_05,
+    grafico_06
+)
 
 st.set_page_config(
-    page_title="Storytelling de ventas FMCG",
+    page_title="Storytelling FMCG",
     page_icon="📊",
     layout="wide"
 )
 
-st.title("Ventas de productos de consumo masivo")
-st.subheader("Polonia | 2022–2024")
+# Encabezado de menu
+st.sidebar.title("📊 Storytelling FMCG")
+st.sidebar.caption("Ventas en Polonia | 2022-2024")
+st.sidebar.divider()
 
-st.markdown("""
-Este dashboard analiza la evolución de las ventas,
-las categorías de productos y los canales de distribución
-para descubrir patrones y comunicar hallazgos mediante datos.
-""")
+# Opciones del menu
+opciones = [
+    "Presentación",
+    "Evolución de ventas",
+    "Ventas por categoría",
+    "Ranking de productos",
+    "Ventas por canal",
+    "Patrones temporales",
+    "Promociones y ventas",
+    "Acerca de"
+]
 
-st.divider()
+# Inicio
+if "seccion" not in st.session_state:
+    st.session_state.seccion = "Presentación"
 
-# Cargar dataset
-df = pd.read_csv("datos/fmcg_2022_2024.csv")
+# Cambiar sección
+def cambiar_seccion(opcion):
+    st.session_state.seccion = opcion
 
-# Indicadores generales
-st.subheader("Exploración del dataset")
+# Crear botones
+for opcion in opciones:
+    st.sidebar.button(
+        opcion,
+        key=f"btn_{opcion}",
+        use_container_width=True,
+        type=(
+            "primary"
+            if st.session_state.seccion == opcion
+            else "secondary"
+        ),
+        on_click=cambiar_seccion,
+        args=(opcion,)
+    )
 
-col1, col2 = st.columns(2)
+# Mostrar contenido
+seccion = st.session_state.seccion
 
-with col1:
-    st.metric("Registros", f"{len(df):,}")
 
-with col2:
-    st.metric("Columnas", len(df.columns))
+if seccion == "Presentación":
+    presentacion.mostrar()
 
-# Vista previa
-st.subheader("Vista previa de los datos")
-st.dataframe(df.head(10), use_container_width=True)
+elif seccion == "Evolución de ventas":
+    grafico_01.mostrar()
 
-st.caption("Fuente: dataset FMCG Daily Sales Data (2022–2024), Kaggle.")
+elif seccion == "Ventas por categoría":
+    grafico_02.mostrar()
+
+elif seccion == "Ranking de productos":
+    grafico_03.mostrar()
+
+elif seccion == "Ventas por canal":
+    grafico_04.mostrar()
+
+elif seccion == "Patrones temporales":
+    grafico_05.mostrar()
+
+elif seccion == "Promociones y ventas":
+    grafico_06.mostrar()
+
+elif seccion == "Acerca de":
+    acerca_de.mostrar()
+
+else:
+    st.title(seccion)
+    st.info("Esta visualización está pendiente de desarrollo.")
