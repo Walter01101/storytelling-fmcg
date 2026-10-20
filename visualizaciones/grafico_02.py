@@ -13,7 +13,7 @@ def mostrar():
 
     El gráfico permitirá seleccionar categorías y comparar
     sus resultados para comprender mejor la composición
-    de las ventas durante el periodo 2022–2024.
+    de las ventas durante el periodo 2022-2024.
     """)
 
     st.info("Próximamente: gráfico interactivo de ventas por categoría.")

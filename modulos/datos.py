@@ -21,16 +21,16 @@ def obtener_datos():
     df["category"] = df["category"].replace({
         "Yogurt": "Yogur",
         "Milk": "Leche",
-        "ReadyMeal": "Comida preparada",
+        "ReadyMeal": "Comida preparada", # listos para consumir o precocidos
         "SnackBar": "Barra de cereal",
         "Juice": "Jugo"
     })
 
     # Traducir canales
     df["channel"] = df["channel"].replace({
-        "Retail": "Venta minorista",
+        "Retail": "Tiendas minoristas",
         "E-commerce": "Comercio electrónico",
-        "Discount": "Descuento"
+        "Discount": "Tiendas de descuento"
     })
 
     # Traducir segmentos

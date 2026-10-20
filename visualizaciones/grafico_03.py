@@ -12,7 +12,7 @@ def mostrar():
     registran menores volúmenes de ventas.
 
     El gráfico permitirá seleccionar cuántos productos mostrar
-    y explorar sus resultados durante el periodo 2022–2024.
+    y explorar sus resultados durante el periodo 2022-2024.
     """)
 
     st.info("Próximamente: ranking interactivo de productos.")
