@@ -6,11 +6,11 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import calendar
 
-from modulos.datos import cargar_datos
+from modulos.datos import obtener_datos
 
 
 def mostrar():
-    df = cargar_datos().copy()
+    df = obtener_datos()
 
     st.title("📅 Patrones temporales")
 
