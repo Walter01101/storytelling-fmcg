@@ -12,15 +12,19 @@ from modulos.datos import obtener_datos
 def mostrar():
     df = obtener_datos()
 
-    st.title("📅 Patrones temporales")
-
+    
     st.markdown("""
-    ### ¿Qué días registran mayores ventas?
+    <div class="hero">
+        <h1>Patrones temporales</h1>
+        <h3>¿Qué días registran mayores ventas?</h3>
+        <p>
+            El calendario de calor permite explorar las unidades vendidas
+            diariamente e identificar días con mayor o menor actividad.
+            Filtra por año y categoría para comparar el comportamiento temporal.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    El calendario de calor permite explorar las unidades vendidas
-    diariamente e identificar días con mayor o menor actividad.
-    Filtra por año y categoría para comparar el comportamiento temporal.
-    """)
 
     # Preparar datos
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
@@ -29,16 +33,6 @@ def mostrar():
     )
     df = df.dropna(subset=["date", "units_sold", "category"])
 
-    # Filtros
-    # col1, col2 = st.columns(2)
-    # col1, col2, col3 = st.columns([1, 1, 4])
-    # col1, col2, col3 = st.columns(
-    #     [1, 1, 4],
-    #     gap="medium",
-    #     vertical_alignment="top"
-    # )
-    
-    
     # Filtros
     anios = sorted(df["date"].dt.year.unique().tolist())
     categorias = ["Todas"] + sorted(df["category"].unique().tolist())

@@ -9,14 +9,20 @@ from modulos.datos import obtener_datos
 def mostrar():
     df = obtener_datos()
 
-    st.title("🎯 Promociones y ventas")
-
+        
     st.markdown("""
-    ### ¿Cómo varían las ventas mensuales según las promociones?
+    <div class="hero">
+        <h1>Promociones y ventas</h1>
+        <p>
+            ### ¿Cómo varían las ventas mensuales según las promociones?
+        </p>
+        <p>
+            Comparamos la distribución de las unidades vendidas con promoción
+            y sin promoción a lo largo del año.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    Comparamos la distribución de las unidades vendidas con promoción
-    y sin promoción a lo largo del año.
-    """)
 
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
     df["units_sold"] = pd.to_numeric(
@@ -126,7 +132,7 @@ def mostrar():
             caja.set_facecolor("#F39C46")
 
     ax.set_title(
-        f"Distribución mensual de ventas según promoción — {anio}",
+        f"Distribución mensual de ventas según promoción - {anio}",
         loc="left",
         fontsize=13,
         fontweight="bold"

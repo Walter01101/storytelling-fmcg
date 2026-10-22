@@ -9,15 +9,18 @@ from modulos.datos import obtener_datos
 def mostrar():
     df = obtener_datos().copy()
 
-    st.title("🏪 Ventas por canal")
-
     st.markdown("""
-    ### ¿Cómo se distribuyen las ventas entre categorías y canales?
+    <div class="hero">
+        <h1>Ventas por canal</h1>
+        <h3>¿Cómo se distribuyen las ventas entre categorías y canales?</h3>
+        <p>
+            Este gráfico muestra el flujo de unidades vendidas desde cada
+            categoría de productos hacia los canales comerciales durante
+            el periodo 2022-2024.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    Este gráfico muestra el flujo de unidades vendidas desde cada
-    categoría de productos hacia los canales comerciales durante
-    el periodo 2022-2024.
-    """)
 
     # Preparar datos
     df["units_sold"] = pd.to_numeric(
@@ -134,7 +137,7 @@ def mostrar():
             ),
             x=0.02,
             xanchor="left",
-            y=0.97,
+            y=0.90,
             font=dict(size=20, color="#222222")
         ),
         font=dict(size=12),
