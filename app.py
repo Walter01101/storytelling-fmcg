@@ -10,7 +10,8 @@ from visualizaciones import (
     grafico_03,
     grafico_04,
     grafico_05,
-    grafico_06
+    grafico_06,
+    grafico_07
 )
 
 st.set_page_config(
@@ -38,7 +39,8 @@ grupos = {
         "Ranking de productos",
         "Ventas por canal",
         "Patrones temporales",
-        "Promociones y ventas"
+        "Promociones y ventas",
+        "Gráfico dinámico",
     ],
     "PROYECTO": [
         "Acerca de"
@@ -99,6 +101,9 @@ elif seccion == "Patrones temporales":
 
 elif seccion == "Promociones y ventas":
     grafico_06.mostrar()
+
+elif seccion == "Gráfico dinámico":
+    grafico_07.mostrar()
 
 elif seccion == "Acerca de":
     acerca_de.mostrar()
