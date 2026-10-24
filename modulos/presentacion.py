@@ -15,7 +15,7 @@ def mostrar():
     st.markdown("""
     <div class="hero">
         <h1>Ventas de productos de consumo masivo</h1>
-        <p>Polonia · Periodo 2022–2024</p>
+        <p>Polonia · Periodo 2022-2024</p>
         <p>
             Exploramos tendencias, categorías y canales comerciales
             para descubrir hallazgos mediante visualización de datos.

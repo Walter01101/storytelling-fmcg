@@ -14,7 +14,7 @@ def mostrar():
     <div class="hero">
         <h1>Promociones y ventas</h1>
         <p>
-            ### ¿Cómo varían las ventas mensuales según las promociones?
+            ¿Cómo varían las ventas mensuales según las promociones?
         </p>
         <p>
             Comparamos la distribución de las unidades vendidas con promoción

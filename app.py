@@ -14,7 +14,7 @@ from visualizaciones import (
 )
 
 st.set_page_config(
-    page_title="ANÁLISIS DE VENTAS",
+    page_title="Análisis de venta",
     page_icon="📋",
     layout="wide"
 )
@@ -24,7 +24,7 @@ cargar_estilos()
 
 # Encabezado del menú
 st.sidebar.markdown("### ANÁLISIS DE VENTAS")
-st.sidebar.caption("Polonia · 2022–2024")
+st.sidebar.caption("Polonia · 2022-2024")
 st.sidebar.divider()
 
 # Opciones agrupadas

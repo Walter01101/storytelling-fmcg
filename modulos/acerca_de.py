@@ -60,7 +60,7 @@ def mostrar():
     Este proyecto académico aplica storytelling con datos
     mediante visualizaciones conectadas para analizar las
     ventas de productos de consumo masivo en Polonia durante
-    el periodo 2022–2024.
+    el periodo 2022-2024.
     """)
 
     st.divider()

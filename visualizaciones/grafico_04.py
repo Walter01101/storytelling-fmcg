@@ -15,29 +15,73 @@ def mostrar():
         <h3>¿Cómo se distribuyen las ventas entre categorías y canales?</h3>
         <p>
             Este gráfico muestra el flujo de unidades vendidas desde cada
-            categoría de productos hacia los canales comerciales durante
-            el periodo 2022-2024.
+            categoría de productos hacia los canales comerciales.
+            Puedes filtrar por año, categoría y canal.
         </p>
     </div>
     """, unsafe_allow_html=True)
 
-
     # Preparar datos
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
     df["units_sold"] = pd.to_numeric(
         df["units_sold"], errors="coerce"
     )
+
     df = df.dropna(
-        subset=["category", "channel", "units_sold"]
+        subset=["date", "category", "channel", "units_sold"]
     )
 
-    # Agrupar ventas por categoría y canal
-    datos = df.groupby(
-        ["category", "channel"],
-        as_index=False
-    )["units_sold"].sum()
+    if df.empty:
+        st.warning("No hay datos disponibles para mostrar.")
+        return
 
-    categorias = sorted(df["category"].unique())
-    canales = sorted(df["channel"].unique())
+    # Filtros de selección única
+    col1, col2, col3 = st.columns(3)
+
+    anios = sorted(df["date"].dt.year.unique().tolist())
+    categorias_disponibles = sorted(df["category"].unique().tolist())
+    canales_disponibles = sorted(df["channel"].unique().tolist())
+
+    with col1:
+        anio = st.selectbox(
+            "Periodo (año)",
+            ["Todos"] + anios
+        )
+
+    with col2:
+        categoria = st.selectbox(
+            "Categoría",
+            ["Todas"] + categorias_disponibles
+        )
+
+    with col3:
+        canal = st.selectbox(
+            "Canal",
+            ["Todos"] + canales_disponibles
+        )
+
+    # Aplicar filtros
+    if anio != "Todos":
+        df = df[df["date"].dt.year == anio]
+
+    if categoria != "Todas":
+        df = df[df["category"] == categoria]
+
+    if canal != "Todos":
+        df = df[df["channel"] == canal]
+
+    if df.empty:
+        st.warning("No hay datos para los filtros seleccionados.")
+        return
+
+    # Agrupar ventas por categoría y canal
+    datos = (
+        df.groupby(["category", "channel"], as_index=False)["units_sold"]
+        .sum()
+    )
+
+    categorias = sorted(datos["category"].unique())
+    canales = sorted(datos["channel"].unique())
     nodos = categorias + canales
 
     # Colores de categorías
@@ -56,7 +100,6 @@ def mostrar():
         "Tiendas minoristas": "#B8E994"
     }
 
-    # Asignar colores incluso si aparece una categoría nueva
     color_predeterminado = "#95A5A6"
 
     colores_nodos = (
@@ -125,19 +168,19 @@ def mostrar():
         )
     )
 
-    # Título y diseño
+    # Periodo del título
+    periodo = str(anio) if anio != "Todos" else "2022-2024"
+
+    # Diseño del gráfico
     fig.update_layout(
         title=dict(
             text=(
                 "<b>Flujo de ventas por categoría y canal</b>"
-                "<br><sup style='color:gray'>"
-                "Distribución de las unidades vendidas por categoría "
-                "y canal comercial, periodo 2022-2024"
-                "</sup>"
+                f"<br><sup style='color:gray'>Periodo: {periodo}</sup>"
             ),
             x=0.02,
             xanchor="left",
-            y=0.90,
+            y=0.95,
             font=dict(size=20, color="#222222")
         ),
         font=dict(size=12),
@@ -147,12 +190,12 @@ def mostrar():
         plot_bgcolor="white"
     )
 
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    # Resumen
+    total = df["units_sold"].sum()
 
     st.caption(
-        "El ancho de cada flujo representa las unidades vendidas. "
-        "Los valores corresponden a la suma del periodo analizado."
+        f"Total de unidades vendidas con los filtros seleccionados: "
+        f"{total:,.0f}."
     )
