@@ -23,9 +23,17 @@ def mostrar():
     """, unsafe_allow_html=True)
 
     # Validar columnas necesarias
-    necesarias = ["sku", "brand", "category", "units_sold"]
+    necesarias = [
+        "sku",
+        "brand",
+        "category",
+        "units_sold"
+    ]
 
-    faltantes = [col for col in necesarias if col not in df.columns]
+    faltantes = [
+        col for col in necesarias
+        if col not in df.columns
+    ]
 
     if faltantes:
         st.error(
@@ -39,8 +47,11 @@ def mostrar():
         errors="coerce"
     )
 
-    df = df.dropna(subset=["sku", "units_sold"]).copy()
+    df = df.dropna(
+        subset=["sku", "units_sold"]
+    ).copy()
 
+    # Evitar códigos de producto vacíos
     df["sku"] = df["sku"].astype(str).str.strip()
 
     df = df[
@@ -49,7 +60,9 @@ def mostrar():
     ].copy()
 
     if df.empty:
-        st.warning("No hay datos válidos para generar el ranking.")
+        st.warning(
+            "No hay datos válidos para generar el ranking."
+        )
         return
 
     # Filtros
@@ -57,7 +70,11 @@ def mostrar():
 
     c1, c2, c3 = st.columns(3)
 
-    marcas = sorted(df["brand"].dropna().unique().tolist(), key=str)
+    marcas = sorted(
+        df["brand"].dropna().unique().tolist(),
+        key=str
+    )
+
     categorias = sorted(
         df["category"].dropna().unique().tolist(),
         key=str
@@ -94,10 +111,14 @@ def mostrar():
     ].copy()
 
     if df_filtrado.empty:
-        st.warning("No hay productos para los filtros seleccionados.")
+        st.warning(
+            "No hay productos para los filtros seleccionados."
+        )
         return
 
-    # Agrupar unidades vendidas por SKU, marca y categoría
+    # Agrupar las unidades vendidas por SKU
+    # Se conserva una marca y categoría por producto cuando
+    # el SKU tiene una única combinación de atributos.
     productos = (
         df_filtrado
         .groupby(
@@ -110,7 +131,7 @@ def mostrar():
         )
     )
 
-    # Ordenar el ranking de mayor a menor
+    # Ordenar de mayor a menor y seleccionar el Top N
     productos = (
         productos
         .sort_values(
@@ -127,7 +148,11 @@ def mostrar():
         return
 
     # Posición del ranking
-    productos.insert(0, "Posición", range(1, len(productos) + 1))
+    productos.insert(
+        0,
+        "Posición",
+        range(1, len(productos) + 1)
+    )
 
     # Indicadores
     total_ranking = productos["unidades_vendidas"].sum()
@@ -152,48 +177,48 @@ def mostrar():
 
     st.divider()
 
-    # =====================================================
-    # GRÁFICO: respetar el orden de la tabla
-    # =====================================================
-
-    productos_grafico = productos.copy()
+    # Preparar el gráfico
+    # Orden ascendente + eje Y invertido:
+    # el producto con más unidades queda arriba.
+    productos_grafico = (
+        productos
+        .sort_values(
+            by=["unidades_vendidas", "sku"],
+            ascending=[True, False],
+            kind="stable"
+        )
+        .copy()
+    )
 
     productos_grafico["sku"] = (
         productos_grafico["sku"].astype(str)
     )
 
-    # La tabla está de mayor a menor.
-    # Invertimos las filas para preparar las barras horizontales.
-    productos_grafico = productos_grafico.iloc[::-1].copy()
+    # Orden explícito de las categorías del eje Y
+    orden_sku = productos_grafico["sku"].tolist()
 
     fig = px.bar(
         productos_grafico,
         x="unidades_vendidas",
         y="sku",
         orientation="h",
-        color="brand",
+        color="unidades_vendidas",
+        color_continuous_scale=[
+            [0.0, "#FFCC80"],  # Naranja claro (valores bajos)
+            [0.5, "#FB8C00"],  # Naranja medio
+            [1.0, "#E65100"]   # Naranja oscuro e intenso (valores altos)
+        ],
         text="unidades_vendidas",
         custom_data=["brand", "category"],
         labels={
             "sku": "Código del producto (SKU)",
             "unidades_vendidas": "Unidades vendidas",
-            "brand": "Marca"
+            "brand": "Marca",
+            "category": "Categoría"
         }
     )
 
-    # Fijar el orden del eje Y explícitamente.
-    # El líder debe aparecer arriba.
-    orden_grafico = productos_grafico["sku"].tolist()
-
-    fig.update_yaxes(
-        categoryorder="array",
-        categoryarray=orden_grafico,
-        autorange=True,
-        title="",
-        automargin=True
-    )
-
-    # Etiquetas de unidades y datos emergentes
+    # Etiquetas y datos al pasar el cursor
     fig.update_traces(
         texttemplate="%{x:,.0f}",
         textposition="outside",
@@ -207,13 +232,18 @@ def mostrar():
         )
     )
 
-    # Espacio a la derecha para las etiquetas
+    # Espacio para que las etiquetas numéricas no se corten
     max_unidades = productos_grafico[
         "unidades_vendidas"
     ].max()
 
-    limite_x = max_unidades * 1.20 if max_unidades > 0 else 1
+    limite_x = (
+        max_unidades * 1.20
+        if max_unidades > 0
+        else 1
+    )
 
+    # Configuración final del gráfico
     fig.update_layout(
         title={
             "text": (
@@ -239,6 +269,9 @@ def mostrar():
         },
         yaxis={
             "title": "",
+            "categoryorder": "array",
+            "categoryarray": orden_sku,
+            "autorange": "reversed",
             "automargin": True,
             "tickfont": {
                 "size": 12,
@@ -256,19 +289,22 @@ def mostrar():
             "r": 100,
             "b": 55
         },
-        height=max(450, len(productos_grafico) * 45),
+        height=max(
+            450,
+            len(productos_grafico) * 45
+        ),
         paper_bgcolor="white",
         plot_bgcolor="white",
         legend_title_text="Marca",
         hovermode="closest"
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
 
-    # =====================================================
-    # TABLA DETALLADA
-    # =====================================================
-
+    # Tabla detallada del ranking
     with st.expander("Consultar detalle del ranking"):
         detalle = productos[
             [
@@ -297,5 +333,6 @@ def mostrar():
 
     st.caption(
         "El ranking se calcula sumando las unidades vendidas "
-        "por SKU, marca y categoría después de aplicar los filtros."
+        "por SKU, después de aplicar los filtros seleccionados. "
+        "Los productos se ordenan de mayor a menor volumen."
     )
