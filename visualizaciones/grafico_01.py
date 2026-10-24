@@ -123,15 +123,23 @@ def mostrar():
         title="Evolución mensual de unidades vendidas"
     )
 
+    
     fig.update_traces(
-        line=dict(width=3),
-        marker=dict(size=7),
+        line=dict(
+            color="#FF8C00",
+            width=3
+        ),
+        marker=dict(
+            color="#FF8C00",
+            size=7
+        ),
         hovertemplate=(
             "Mes: %{x|%B %Y}"
             "<br>Unidades vendidas: %{y:,.0f}"
             "<extra></extra>"
         )
     )
+
 
     fig.update_layout(
         title=dict(
