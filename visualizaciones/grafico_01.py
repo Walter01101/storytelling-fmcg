@@ -21,53 +21,69 @@ def mostrar():
     </div>
     """, unsafe_allow_html=True)
 
-    # Validar las columnas necesarias
-    columnas_necesarias = ["date", "units_sold"]
+    # Validar columnas necesarias
+    columnas_necesarias = [
+        "date", "units_sold", "category", "channel", "region"
+    ]
 
-    if not all(col in df.columns for col in columnas_necesarias):
-        st.error("Faltan las columnas 'date' o 'units_sold' en los datos.")
+    faltantes = [
+        col for col in columnas_necesarias
+        if col not in df.columns
+    ]
+
+    if faltantes:
+        st.error(
+            f"Faltan columnas necesarias: {', '.join(faltantes)}"
+        )
         return
 
-    # Preparar los datos
+    # Preparar datos
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
     df["units_sold"] = pd.to_numeric(
         df["units_sold"], errors="coerce"
     )
 
-    df = df.dropna(subset=["date", "units_sold"])
+    df = df.dropna(
+        subset=[
+            "date", "units_sold", "category", "channel", "region"
+        ]
+    )
 
     if df.empty:
-        st.warning("No hay datos válidos para mostrar el gráfico.")
+        st.warning("No hay datos válidos para mostrar.")
         return
 
-    # Filtros
+    # Filtros multiselección
     st.subheader("Filtros de análisis")
 
     c1, c2, c3 = st.columns(3)
 
     with c1:
-        categorias = sorted(df["category"].dropna().unique())
+        categorias = sorted(df["category"].unique().tolist())
+
         categorias_sel = st.multiselect(
             "Categoría",
-            categorias,
+            options=categorias,
             default=categorias,
             key="evolucion_categoria"
         )
 
     with c2:
-        canales = sorted(df["channel"].dropna().unique())
+        canales = sorted(df["channel"].unique().tolist())
+
         canales_sel = st.multiselect(
             "Canal",
-            canales,
+            options=canales,
             default=canales,
             key="evolucion_canal"
         )
 
     with c3:
-        regiones = sorted(df["region"].dropna().unique())
+        regiones = sorted(df["region"].unique().tolist())
+
         regiones_sel = st.multiselect(
             "Región",
-            regiones,
+            options=regiones,
             default=regiones,
             key="evolucion_region"
         )
@@ -83,9 +99,11 @@ def mostrar():
         st.warning("No hay datos para los filtros seleccionados.")
         return
 
-    # Agrupar las ventas por mes
+    # Agrupar ventas por mes
     df_filtrado["mes"] = (
-        df_filtrado["date"].dt.to_period("M").dt.to_timestamp()
+        df_filtrado["date"]
+        .dt.to_period("M")
+        .dt.to_timestamp()
     )
 
     ventas_mes = (
@@ -119,37 +137,38 @@ def mostrar():
         labels={
             "mes": "Mes",
             "units_sold": "Unidades vendidas"
-        },
-        title="Evolución mensual de unidades vendidas"
+        }
     )
 
-    
+    # Línea, puntos y sombreado naranja
     fig.update_traces(
         line=dict(
-            color="#FF8C00",
+            color="#F4A261",
             width=3
         ),
         marker=dict(
-            color="#FF8C00",
+            color="#F4A261",
             size=7
         ),
+        fill="tozeroy",
+        fillcolor="rgba(244,162,97,0.15)",
         hovertemplate=(
-            "Mes: %{x|%B %Y}"
+            "Mes: %{x|%b %Y}"
             "<br>Unidades vendidas: %{y:,.0f}"
             "<extra></extra>"
         )
     )
 
-
+    # Diseño del gráfico
     fig.update_layout(
         title=dict(
             text=(
                 "<b>Evolución mensual de ventas</b>"
-                "<br><sup>Unidades vendidas 2022 - 2024</sup>"
+                "<br><sup>Unidades vendidas según los filtros seleccionados</sup>"
             ),
             x=0.02,
             xanchor="left",
-            font=dict(size=20, color="#222222")
+            font=dict(size=20, color="#174A70")
         ),
         xaxis=dict(
             title="Periodo",

@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -23,12 +22,7 @@ def mostrar():
     """, unsafe_allow_html=True)
 
     # Validar columnas necesarias
-    necesarias = [
-        "sku",
-        "brand",
-        "category",
-        "units_sold"
-    ]
+    necesarias = ["sku", "brand", "category", "units_sold"]
 
     faltantes = [
         col for col in necesarias
@@ -51,7 +45,6 @@ def mostrar():
         subset=["sku", "units_sold"]
     ).copy()
 
-    # Evitar códigos de producto vacíos
     df["sku"] = df["sku"].astype(str).str.strip()
 
     df = df[
@@ -116,9 +109,7 @@ def mostrar():
         )
         return
 
-    # Agrupar las unidades vendidas por SKU
-    # Se conserva una marca y categoría por producto cuando
-    # el SKU tiene una única combinación de atributos.
+    # Agrupar unidades vendidas por producto
     productos = (
         df_filtrado
         .groupby(
@@ -131,7 +122,7 @@ def mostrar():
         )
     )
 
-    # Ordenar de mayor a menor y seleccionar el Top N
+    # Ranking de mayor a menor
     productos = (
         productos
         .sort_values(
@@ -177,14 +168,12 @@ def mostrar():
 
     st.divider()
 
-    # Preparar el gráfico
-    # Orden ascendente + eje Y invertido:
-    # el producto con más unidades queda arriba.
+    # Preparar el gráfico en orden descendente
     productos_grafico = (
         productos
         .sort_values(
-            by=["unidades_vendidas", "sku"],
-            ascending=[True, False],
+            by="unidades_vendidas",
+            ascending=False,
             kind="stable"
         )
         .copy()
@@ -194,7 +183,7 @@ def mostrar():
         productos_grafico["sku"].astype(str)
     )
 
-    # Orden explícito de las categorías del eje Y
+    # Orden explícito: primero el más vendido
     orden_sku = productos_grafico["sku"].tolist()
 
     fig = px.bar(
@@ -204,9 +193,9 @@ def mostrar():
         orientation="h",
         color="unidades_vendidas",
         color_continuous_scale=[
-            [0.0, "#FFCC80"],  # Naranja claro (valores bajos)
-            [0.5, "#FB8C00"],  # Naranja medio
-            [1.0, "#E65100"]   # Naranja oscuro e intenso (valores altos)
+            [0.0, "#FFCC80"],
+            [0.5, "#FB8C00"],
+            [1.0, "#E65100"]
         ],
         text="unidades_vendidas",
         custom_data=["brand", "category"],
@@ -232,7 +221,7 @@ def mostrar():
         )
     )
 
-    # Espacio para que las etiquetas numéricas no se corten
+    # Espacio para las etiquetas numéricas
     max_unidades = productos_grafico[
         "unidades_vendidas"
     ].max()
@@ -243,59 +232,65 @@ def mostrar():
         else 1
     )
 
-    # Configuración final del gráfico
+    # Configuración del gráfico
     fig.update_layout(
-        title={
-            "text": (
+        title=dict(
+            text=(
                 "<b>Ranking de productos por unidades vendidas</b>"
                 "<br><sup>De mayor a menor volumen de ventas</sup>"
             ),
-            "x": 0.02,
-            "xanchor": "left",
-            "font": {
-                "size": 20,
-                "color": "#222222"
-            }
-        },
-        xaxis={
-            "title": "Unidades vendidas",
-            "range": [0, limite_x],
-            "rangemode": "tozero",
-            "gridcolor": "rgba(150,150,150,0.20)",
-            "tickfont": {
-                "size": 11,
-                "color": "#333333"
-            }
-        },
-        yaxis={
-            "title": "",
-            "categoryorder": "array",
-            "categoryarray": orden_sku,
-            "autorange": "reversed",
-            "automargin": True,
-            "tickfont": {
-                "size": 12,
-                "color": "#222222"
-            }
-        },
-        font={
-            "family": "Arial",
-            "size": 12,
-            "color": "#222222"
-        },
-        margin={
-            "t": 100,
-            "l": 110,
-            "r": 100,
-            "b": 55
-        },
+            x=0.02,
+            xanchor="left",
+            font=dict(
+                size=20,
+                color="#222222"
+            )
+        ),
+
+        xaxis=dict(
+            title="Unidades vendidas",
+            range=[0, limite_x],
+            rangemode="tozero",
+            gridcolor="rgba(150,150,150,0.20)",
+            tickfont=dict(
+                size=11,
+                color="#333333"
+            )
+        ),
+
+        yaxis=dict(
+            title="",
+            categoryorder="array",
+            categoryarray=orden_sku,
+            autorange="reversed",
+            automargin=True,
+            tickfont=dict(
+                size=12,
+                color="#222222"
+            )
+        ),
+
+        font=dict(
+            family="Arial",
+            size=12,
+            color="#222222"
+        ),
+
+        margin=dict(
+            t=100,
+            l=110,
+            r=100,
+            b=55
+        ),
+
         height=max(
             450,
             len(productos_grafico) * 45
         ),
+
         paper_bgcolor="white",
         plot_bgcolor="white",
-        legend_title_text="Marca",
+        legend_title_text="Unidades vendidas",
         hovermode="closest"
     )
 
@@ -333,6 +328,6 @@ def mostrar():
 
     st.caption(
         "El ranking se calcula sumando las unidades vendidas "
-        "por SKU, después de aplicar los filtros seleccionados. "
-        "Los productos se ordenan de mayor a menor volumen."
+        "por SKU después de aplicar los filtros. Los productos "
+        "se ordenan de mayor a menor volumen."
     )

@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -55,7 +54,7 @@ def mostrar():
         st.warning("No hay datos para el canal seleccionado.")
         return
 
-    # Agrupar las unidades vendidas por categoría
+    # Agrupar unidades vendidas por categoría
     ventas = (
         df.groupby("category", as_index=False)["units_sold"]
         .sum()
@@ -68,6 +67,7 @@ def mostrar():
         st.warning("El total de unidades vendidas es cero.")
         return
 
+    # Calcular participación
     ventas["participacion"] = (
         ventas["units_sold"] / total_ventas * 100
     )
@@ -108,17 +108,16 @@ def mostrar():
         y="category",
         orientation="h",
         text="units_sold",
-        color="units_sold",
-        color_continuous_scale="Teal",
         custom_data=["participacion"],
         labels={
             "units_sold": "Unidades vendidas",
             "category": "Categoría"
-        },
-        title="Unidades vendidas por categoría"
+        }
     )
 
+    # Color naranja uniforme
     fig.update_traces(
+        marker_color="#F4A261",
         texttemplate="%{x:,.0f}",
         textposition="outside",
         cliponaxis=False,
@@ -130,58 +129,44 @@ def mostrar():
         )
     )
 
-    
+    # Diseño visual
     fig.update_layout(
-    title=dict(
-        text=(
-            "<b>Ventas por categoría</b>"
-            "<br><sup>Distribución del volumen de ventas</sup>"
-        ),
-        x=0.02,
-        xanchor="left",
-        font=dict(size=20, color="#222222")
-    ),
-
-    xaxis=dict(
         title=dict(
-            text="Unidades vendidas",
-            font=dict(size=13, color="#333333")
+            text=(
+                "<b>Ventas por categoría</b>"
+                "<br><sup>Distribución del volumen de ventas</sup>"
+            ),
+            x=0.02,
+            xanchor="left",
+            font=dict(size=20, color="#174A70")
         ),
-        tickfont=dict(size=12, color="#333333"),
-        showgrid=True,
-        gridcolor="rgba(150,150,150,0.20)",
-        rangemode="tozero"
-    ),
-
-    yaxis=dict(
-        title="",
-        tickfont=dict(
-            size=14,
+        xaxis=dict(
+            title=dict(
+                text="Unidades vendidas",
+                font=dict(size=13, color="#333333")
+            ),
+            tickfont=dict(size=12, color="#333333"),
+            showgrid=True,
+            gridcolor="rgba(150,150,150,0.20)",
+            rangemode="tozero"
+        ),
+        yaxis=dict(
+            title="",
+            tickfont=dict(size=14, color="#222222"),
+            automargin=True,
+            showticklabels=True
+        ),
+        font=dict(
+            family="Arial",
+            size=13,
             color="#222222"
         ),
-        automargin=True,
-        showticklabels=True
-    ),
-
-    coloraxis_showscale=False,
-    font=dict(
-        family="Arial",
-        size=13,
-        color="#222222"
-    ),
-
-    margin=dict(
-        t=100,
-        l=150,
-        r=70,
-        b=50
-    ),
-
-    height=max(400, len(ventas) * 65),
-    paper_bgcolor="white",
-    plot_bgcolor="white"
-)
-
+        margin=dict(t=100, l=150, r=70, b=50),
+        height=max(400, len(ventas) * 65),
+        paper_bgcolor="white",
+        plot_bgcolor="white",
+        showlegend=False
+    )
 
     st.plotly_chart(
         fig,
@@ -194,10 +179,8 @@ def mostrar():
             "units_sold", ascending=False
         ).copy()
 
-        detalle["participacion"] = (
-            detalle["participacion"].map(
-                lambda x: f"{x:.2f}%"
-            )
+        detalle["participacion"] = detalle["participacion"].map(
+            lambda x: f"{x:.2f}%"
         )
 
         detalle = detalle.rename(columns={

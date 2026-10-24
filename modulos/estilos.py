@@ -11,34 +11,35 @@ def cargar_estilos():
         padding-bottom: 2rem;
     }
 
-    /* Encabezado principal: azul */
+    /* Encabezado: fondo blanco y solo borde inferior */
     .hero {
-        background: linear-gradient(120deg, #123B65, #1D5D91);
+        background: #FFFFFF;
         padding: 2rem;
-        border-radius: 16px;
-        color: white;
+        border-radius: 0;
+        border-bottom: 2px solid #174A70;
+        color: #174A70;
         margin-bottom: 1.5rem;
     }
 
     .hero h1 {
-        color: #FFFFFF;
+        color: #174A70;
         font-size: 2.25rem;
         margin-bottom: 0.5rem;
     }
 
     .hero h3 {
-        color: #FFFFFF;
+        color: #174A70;
     }
 
     .hero p {
-        color: #E0F2FE;
+        color: #475569;
         font-size: 1.05rem;
         margin-bottom: 0;
     }
 
     /* Títulos de sección */
     .section-title {
-        color: #123B65;
+        color: #174A70;
         font-size: 1.45rem;
         font-weight: 700;
         margin-top: 1rem;
@@ -56,7 +57,7 @@ def cargar_estilos():
     }
 
     .info-card h4 {
-        color: #123B65;
+        color: #174A70;
         margin: 0 0 0.5rem 0;
         font-size: 1.05rem;
     }
@@ -73,7 +74,7 @@ def cargar_estilos():
         border: 1px solid #C5D9EB;
         padding: 1.2rem;
         border-radius: 10px;
-        color: #123B65;
+        color: #174A70;
     }
 
     /* Pie de página */
@@ -90,7 +91,7 @@ def cargar_estilos():
     }
 
     [data-testid="stSidebar"] h3 {
-        color: #123B65;
+        color: #174A70;
         font-size: 1.15rem;
     }
 
@@ -108,13 +109,13 @@ def cargar_estilos():
     /* Opciones no seleccionadas */
     [data-testid="stSidebar"] .stButton button[kind="secondary"] {
         background-color: #F5F8FC;
-        color: #123B65;
+        color: #174A70;
         border: 1px solid #D0DDE9;
     }
 
     [data-testid="stSidebar"] .stButton button[kind="secondary"]:hover {
         background-color: #E5EEF8;
-        color: #123B65;
+        color: #174A70;
         border-color: #1D5D91;
     }
 
@@ -122,12 +123,15 @@ def cargar_estilos():
     [data-testid="stSidebar"] .stButton button[kind="primary"],
     [data-testid="stSidebar"] .stButton button[kind="primary"]:hover,
     [data-testid="stSidebar"] .stButton button[kind="primary"]:focus {
-        background-color: #123B65 !important;
+        background-color: #174A70 !important;
         color: #FFFFFF !important;
-        border: 1px solid #123B65 !important;
+        border: 1px solid #174A70 !important;
         border-radius: 8px;
         font-weight: 600;
         box-shadow: none !important;
     }
+
     </style>
     """, unsafe_allow_html=True)
+
+

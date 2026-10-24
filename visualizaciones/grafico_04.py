@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
@@ -80,7 +79,14 @@ def mostrar():
         .sum()
     )
 
-    categorias = sorted(datos["category"].unique())
+    # ÚNICO CAMBIO: categorías ordenadas de mayor a menor venta
+    categorias = (
+        datos.groupby("category")["units_sold"]
+        .sum()
+        .sort_values(ascending=False)
+        .index.tolist()
+    )
+
     canales = sorted(datos["channel"].unique())
     nodos = categorias + canales
 
