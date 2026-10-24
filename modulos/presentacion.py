@@ -1,4 +1,3 @@
-
 import streamlit as st
 
 from modulos.datos import cargar_datos
@@ -18,12 +17,108 @@ def mostrar():
         <p>Polonia · Periodo 2022-2024</p>
         <p>
             Exploramos tendencias, categorías y canales comerciales
-            para descubrir hallazgos mediante visualización de datos.
+            para descubrir hallazgos mediante visualización de datos
+            en el mercado polaco.
         </p>
     </div>
     """, unsafe_allow_html=True)
 
-    # Indicadores
+    # Contexto de Polonia
+    st.markdown(
+        '<div class="section-title">Polonia en contexto</div>',
+        unsafe_allow_html=True
+    )
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        st.markdown("""
+        <div class="info-card">
+            <h4>👥 Población</h4>
+            <h3>≈ 37,5 millones</h3>
+            <p>Habitantes aproximadamente.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown("""
+        <div class="info-card">
+            <h4>🏙️ Capital</h4>
+            <h3>Varsovia</h3>
+            <p>Principal centro político y económico.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col3:
+        st.markdown("""
+        <div class="info-card">
+            <h4>📍 Ubicación</h4>
+            <h3>Europa central</h3>
+            <p>País miembro de la Unión Europea.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col4:
+        st.markdown("""
+        <div class="info-card">
+            <h4>🌦️ Clima</h4>
+            <h3>Templado</h3>
+            <p>Inviernos fríos y veranos generalmente cálidos.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.divider()
+
+    # Cultura, gastronomía y regiones
+    st.markdown(
+        '<div class="section-title">Cultura y hábitos de consumo</div>',
+        unsafe_allow_html=True
+    )
+
+    col1, col2 = st.columns(2, gap="large")
+
+    with col1:
+        st.markdown("""
+        <div class="info-card">
+            <h4>🍲 Gastronomía polaca</h4>
+            <p>
+                Entre los platos tradicionales destacan los pierogi
+                (empanadillas rellenas), bigos (guiso de col y carne),
+                żurek (sopa fermentada de centeno) y kotlet schabowy
+                (chuleta empanizada).
+            </p>
+            <p>
+                Las sopas, las patatas, los panes y los productos
+                lácteos forman parte de su tradición culinaria.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown("""
+        <div class="info-card">
+            <h4>🌍 Regiones y clima</h4>
+            <p>
+                Polonia presenta paisajes diversos: costa báltica
+                al norte, extensas llanuras en el centro y zonas
+                montañosas al sur.
+            </p>
+            <p>
+                Las estaciones influyen en la demanda de alimentos:
+                los productos frescos, las bebidas y los alimentos
+                reconfortantes pueden mostrar patrones estacionales.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.caption(
+        "El norte, centro y sur se presentan como referencias geográficas "
+        "generales, no como las únicas divisiones administrativas oficiales."
+    )
+
+    st.divider()
+
+    # Resumen de los datos
     st.markdown(
         '<div class="section-title">Resumen de los datos</div>',
         unsafe_allow_html=True
@@ -45,7 +140,6 @@ def mostrar():
         )
         st.metric("Categorías", categorias)
 
-    # Estructura de datos
     with st.expander("Consultar estructura de los datos"):
         st.write("Columnas disponibles:")
         st.write(df.columns.tolist())

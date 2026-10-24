@@ -189,7 +189,7 @@ def mostrar():
     )
     mapeable.set_array([])
 
-    cax = fig.add_axes([0.70, 0.875, 0.28, 0.018])
+    cax = fig.add_axes([0.70, 0.91, 0.28, 0.018])
 
     barra = fig.colorbar(
         mapeable, cax=cax, orientation="horizontal"
