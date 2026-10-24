@@ -35,12 +35,13 @@ def mostrar():
     df[columna_ventas] = pd.to_numeric(
         df[columna_ventas], errors="coerce"
     )
+
     df = df.dropna(subset=[columna_fecha, columna_ventas])
 
     # Filtro de año
     anios = sorted(df[columna_fecha].dt.year.unique())
 
-    if len(anios) == 0:
+    if not anios:
         st.warning("No hay datos disponibles para mostrar.")
         return
 
@@ -66,23 +67,27 @@ def mostrar():
         "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
     ]
 
+    meses = range(1, 13)
+
     # Gráfico
     fig, ax = plt.subplots(figsize=(11, 5))
 
+    # Línea y puntos en naranja
     ax.plot(
-        range(1, 13),
+        meses,
         ventas_mensuales.values,
         marker="o",
         linewidth=2.5,
         markersize=6,
-        color="#2A9D8F"
+        color="#F4A261"
     )
 
+    # Sombreado naranja
     ax.fill_between(
-        range(1, 13),
+        meses,
         ventas_mensuales.values,
-        alpha=0.12,
-        color="#2A9D8F"
+        alpha=0.15,
+        color="#F4A261"
     )
 
     ax.set_title(
@@ -91,16 +96,18 @@ def mostrar():
         fontsize=15,
         fontweight="bold"
     )
+
     ax.set_xlabel("Mes")
     ax.set_ylabel("Unidades vendidas")
 
-    # Mostrar el eje Y en miles: 10k, 20k, 30k...
+    # Eje Y en miles
     ax.yaxis.set_major_formatter(
         EngFormatter(unit="", sep="")
     )
 
-    ax.set_xticks(range(1, 13))
+    ax.set_xticks(list(meses))
     ax.set_xticklabels(nombres_meses)
+
     ax.grid(axis="y", linestyle="--", alpha=0.25)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)

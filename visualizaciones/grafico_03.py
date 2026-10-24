@@ -34,6 +34,10 @@ def mostrar():
 
     df = df.dropna(subset=["date", "sku", "units_sold"])
 
+    if df.empty:
+        st.warning("No hay datos disponibles para mostrar.")
+        return
+
     # Filtros
     col1, col2 = st.columns(2)
 
@@ -69,16 +73,17 @@ def mostrar():
         .sort_values()
     )
 
-    # Gráfico
+    # Crear gráfico
     fig, ax = plt.subplots(figsize=(10, 6))
 
     barras = ax.barh(
         ventas.index.astype(str),
         ventas.values,
-        color="#2A9D8F",
+        color="#F4A261",
         height=0.65
     )
 
+    # Etiquetas de valores
     ax.bar_label(
         barras,
         labels=[f"{v:,.0f}" for v in ventas.values],

@@ -37,6 +37,10 @@ def mostrar():
     # Filtro por año
     anios = sorted(df["date"].dt.year.unique().tolist())
 
+    if not anios:
+        st.warning("No hay datos disponibles para mostrar.")
+        return
+
     anio = st.selectbox(
         "Selecciona el año",
         ["Todos"] + anios,
@@ -63,7 +67,7 @@ def mostrar():
     barras = ax.barh(
         ventas.index,
         ventas.values,
-        color="#2A9D8F",
+        color="#F4A261",
         height=0.65
     )
 
@@ -87,7 +91,7 @@ def mostrar():
     ax.set_xlabel("Unidades vendidas (miles)")
     ax.set_ylabel("")
 
-    # Eje X expresado siempre en miles
+    # Eje X siempre en miles
     ax.xaxis.set_major_formatter(
         FuncFormatter(lambda x, _: f"{x / 1000:.0f}k")
     )
